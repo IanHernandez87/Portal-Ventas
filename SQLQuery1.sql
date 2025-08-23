@@ -1,0 +1,86 @@
+-- ========================================
+-- CREACIÓN DE BASE DE DATOS
+-- ========================================
+CREATE DATABASE PortalVentasDB;
+GO
+
+USE PortalVentasDB;
+GO
+
+-- ========================================
+-- TABLA: Usuarios
+-- ========================================
+CREATE TABLE Usuarios (
+    UsuarioID INT IDENTITY(1,1) PRIMARY KEY,
+    NombreUsuario VARCHAR(50) NOT NULL UNIQUE,
+    PasswordHash VARCHAR(255) NOT NULL,
+    Rol VARCHAR(20) NOT NULL CHECK (Rol IN ('admin', 'operador')),
+    FechaRegistro DATETIME DEFAULT GETDATE()
+);
+GO
+
+-- ========================================
+-- TABLA: ControlCarga
+-- Registra cada vez que un usuario sube un archivo
+-- ========================================
+CREATE TABLE ControlCarga (
+    CargaID INT IDENTITY(1,1) PRIMARY KEY,
+    UsuarioID INT NOT NULL,
+    FechaCarga DATE NOT NULL,
+    ArchivoNombre VARCHAR(255),
+    CantidadRegistros INT,
+    CONSTRAINT FK_ControlCarga_Usuarios FOREIGN KEY (UsuarioID)
+        REFERENCES Usuarios (UsuarioID)
+);
+GO
+
+-- ========================================
+-- TABLA: VentasExcel
+-- Contendrá la data cargada desde el Excel/CSV
+-- ========================================
+CREATE TABLE VentasExcel (
+    VentaID INT IDENTITY(1,1) PRIMARY KEY,
+    DOCENTRY INT,
+    DOCNUM INT,
+    NUMERO_PRESTAMO VARCHAR(50),
+    ALMACEN_ENTREGA VARCHAR(50),
+    DOCDATE DATE,
+    DIA INT,
+    MES INT,
+    ANIO INT,
+    CARDCODE VARCHAR(50),
+    CARDNAME VARCHAR(255),
+    GROUPCODE VARCHAR(50),
+    TIPO VARCHAR(50),
+    QUANTITY INT,
+    TOTAL_USD DECIMAL(18,2),
+    ITEMCODE VARCHAR(50),
+    SERIE VARCHAR(50),
+    U_AMODELO VARCHAR(100),
+    MODELO VARCHAR(100),
+    U_AMARCA VARCHAR(100),
+    MARCA VARCHAR(100),
+    U_ACOLOR VARCHAR(100),
+    COLOR VARCHAR(100),
+    SEGMENTO VARCHAR(100),
+    VENDEDOR VARCHAR(50),
+    NOMBRE_VENDEDOR VARCHAR(100),
+    SUPERVISOR VARCHAR(100),
+    ALMACEN_VENTA VARCHAR(50),
+    NOMBRE_ALMACEN_VENTA VARCHAR(150),
+    CANAL VARCHAR(100),
+    -- Campos de control
+    FechaCarga DATETIME DEFAULT GETDATE(),
+    CargaID INT NULL,
+    CONSTRAINT FK_VentasExcel_ControlCarga FOREIGN KEY (CargaID)
+        REFERENCES ControlCarga (CargaID)
+);
+GO
+
+-- ========================================
+-- USUARIO DE PRUEBA
+-- ========================================
+INSERT INTO Usuarios (NombreUsuario, PasswordHash, Rol)
+VALUES ('admin', 'admin123hash', 'admin'),
+       ('operador1', 'operador123hash', 'operador');
+GO
