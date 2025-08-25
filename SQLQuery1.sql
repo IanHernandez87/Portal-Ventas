@@ -1,15 +1,9 @@
--- ========================================
--- CREACIÓN DE BASE DE DATOS
--- ========================================
 CREATE DATABASE PortalVentasDB;
 GO
 
 USE PortalVentasDB;
 GO
 
--- ========================================
--- TABLA: Usuarios
--- ========================================
 CREATE TABLE Usuarios (
     UsuarioID INT IDENTITY(1,1) PRIMARY KEY,
     NombreUsuario VARCHAR(50) NOT NULL UNIQUE,
@@ -19,10 +13,6 @@ CREATE TABLE Usuarios (
 );
 GO
 
--- ========================================
--- TABLA: ControlCarga
--- Registra cada vez que un usuario sube un archivo
--- ========================================
 CREATE TABLE ControlCarga (
     CargaID INT IDENTITY(1,1) PRIMARY KEY,
     UsuarioID INT NOT NULL,
@@ -34,10 +24,6 @@ CREATE TABLE ControlCarga (
 );
 GO
 
--- ========================================
--- TABLA: VentasExcel
--- Contendrá la data cargada desde el Excel/CSV
--- ========================================
 CREATE TABLE VentasExcel (
     VentaID INT IDENTITY(1,1) PRIMARY KEY,
     DOCENTRY INT,
@@ -69,7 +55,6 @@ CREATE TABLE VentasExcel (
     ALMACEN_VENTA VARCHAR(50),
     NOMBRE_ALMACEN_VENTA VARCHAR(150),
     CANAL VARCHAR(100),
-    -- Campos de control
     FechaCarga DATETIME DEFAULT GETDATE(),
     CargaID INT NULL,
     CONSTRAINT FK_VentasExcel_ControlCarga FOREIGN KEY (CargaID)
@@ -77,9 +62,6 @@ CREATE TABLE VentasExcel (
 );
 GO
 
--- ========================================
--- USUARIO DE PRUEBA
--- ========================================
 INSERT INTO Usuarios (NombreUsuario, PasswordHash, Rol)
 VALUES ('admin', 'admin123hash', 'admin'),
        ('operador1', 'operador123hash', 'operador');
